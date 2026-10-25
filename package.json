@@ -1,0 +1,51 @@
+{
+  "name": "react-native-flow-nav",
+  "version": "0.1.0",
+  "description": "A tiny, typed, native-first navigation API built on React Native Navigation.",
+  "keywords": [
+    "react-native",
+    "navigation",
+    "react-native-navigation",
+    "typescript",
+    "native"
+  ],
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --coverage",
+    "lint": "eslint .",
+    "check": "npm run lint && npm run typecheck && npm test && npm run build",
+    "prepublishOnly": "npm run check"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-native": ">=0.72",
+    "react-native-navigation": "^8.9.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@vitest/coverage-v8": "^4.1.12",
+    "esbuild": "^0.28.2",
+    "eslint": "^9.0.0",
+    "tsup": "^9.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.12"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
