@@ -10,6 +10,16 @@ The easiest typed API for **React Native Navigation**. It keeps RNN as the nativ
 npm install react-native-flow-nav react-native-navigation
 ```
 
+### Install from GitHub
+
+Until the npm registry release is available, install the checked-in source directly from GitHub:
+
+```sh
+npm install github:yogesh0333/react-native-flow-nav#main react-native-navigation
+```
+
+The repository's `prepare` script builds the package during installation.
+
 Complete React Native Navigation's native installation first. This package does not replace that native setup.
 
 ## Quick start

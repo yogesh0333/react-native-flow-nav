@@ -23,6 +23,7 @@
   },
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "prepare": "npm run build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --coverage",
     "lint": "eslint .",
