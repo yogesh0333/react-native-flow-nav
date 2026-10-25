@@ -1,7 +1,7 @@
 import { assertSafeParams } from './security';
 import type { AnyScreenDefinition, AppDefinition, Component, FlowNavigator, RnnAdapter, RnnLayout, RnnNavigation, ScreenDefinition, ScreenOptions } from './types';
 
-export type { AnyScreenDefinition, AppDefinition, Component, FlowNavigator, FlowScreenProps, ParamsOf, Presentation, RnnAdapter, RnnLayout, RnnNavigation, ScreenDefinition, ScreenOptions } from './types';
+export type { AnyScreenDefinition, AppDefinition, Component, FlowNavigator, ParamsOf, Presentation, RnnAdapter, RnnLayout, RnnNavigation, ScreenDefinition, ScreenOptions } from './types';
 
 /** Convert RNN's singleton to Flow Nav's lightweight adapter. */
 export function rnnAdapter(navigation: RnnNavigation): RnnAdapter {

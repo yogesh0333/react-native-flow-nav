@@ -1,11 +1,4 @@
-export type Component<P> = (props: P & FlowScreenProps) => unknown;
-
-export type FlowScreenProps = {
-  /** RNN's id is supplied automatically. Application code should almost never need it. */
-  componentId: string;
-  /** Resolve the promise returned by nav.present(). */
-  dismissWithResult: (value?: unknown) => Promise<void>;
-};
+export type Component<P> = (props: P) => unknown;
 
 export type Presentation = 'push' | 'modal' | 'overlay';
 
