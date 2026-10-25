@@ -1,13 +1,13 @@
 # react-native-flow-nav
 
-The easiest typed API for **React Native Navigation**. It keeps RNN as the native engine and removes component registration, layout JSON, and component IDs from everyday app code.
+The easiest typed navigation API for React Native. Its route core has no runtime dependency on an older navigation engine, and adapters can target native navigation implementations.
 
 > Status: early v0.1. It is intentionally small and suitable for experimentation; do not use it in production yet.
 
 ## Install
 
 ```sh
-npm install react-native-flow-nav react-native-navigation
+npm install react-native-flow-nav
 ```
 
 ### Install from GitHub
@@ -20,7 +20,7 @@ npm install github:yogesh0333/react-native-flow-nav#main react-native-navigation
 
 The repository's `prepare` script builds the package during installation.
 
-Complete React Native Navigation's native installation first. This package does not replace that native setup.
+The current `rnnAdapter` is a compatibility adapter: install `react-native-navigation` only when using it. The Flow Nav core supports current React Native releases independently; its own latest-RN Swift/Kotlin driver is the next package in development.
 
 ## Quick start
 

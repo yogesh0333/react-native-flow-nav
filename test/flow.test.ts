@@ -55,6 +55,35 @@ describe('react-native-flow-nav', () => {
     expect(native.setStackRoot).toHaveBeenCalledWith('native-home-id', expect.any(Object));
   });
 
+  it('redirects unauthenticated attempts and preserves nested native tab stacks', async () => {
+    const native = adapter();
+    const blocked = vi.fn();
+    const nav = createFlow(defineApp({
+      start: 'Home',
+      tabs: ['Home', 'Orders'],
+      auth: { isAuthenticated: () => false, login: 'Login', onBlocked: blocked },
+      screens: {
+        Login: screen(Home),
+        Home: screen(Home),
+        Orders: screen(Home, { requiresAuth: true }),
+        OrderDetails: screen(Profile, { requiresAuth: true }),
+      },
+    }), native);
+    native.appear('home-stack');
+    await nav.to('OrderDetails', { userId: 'order-42' });
+    expect(blocked).toHaveBeenCalledWith({ route: 'OrderDetails', params: { userId: 'order-42' } });
+    expect(native.push).toHaveBeenCalledWith('home-stack', { component: { name: 'app.Login', passProps: undefined, options: {} } });
+  });
+
+  it('rejects invalid auth declarations', () => {
+    expect(() => defineApp({
+      start: 'Home', auth: { isAuthenticated: () => false, login: 'Missing' }, screens: { Home: screen(Home) }
+    } as never)).toThrow('Unknown login screen');
+    expect(() => defineApp({
+      start: 'Home', auth: { isAuthenticated: () => false, login: 'Login' }, screens: { Home: screen(Home), Login: screen(Home, { requiresAuth: true }) }
+    })).toThrow('must not require');
+  });
+
   it('rejects unsafe and circular params before they reach native code', async () => {
     const native = adapter();
     const nav = createFlow(defineApp({ start: 'Home', screens: { Home: screen(Home), Profile: screen(Profile) } }), native);

@@ -4,7 +4,9 @@ export type Presentation = 'push' | 'modal' | 'overlay';
 
 export type ScreenOptions = Readonly<{
   presentation?: Presentation;
-  /** Passed unchanged to React Native Navigation. */
+  /** A protected route redirects to the app's login route when unauthenticated. */
+  requiresAuth?: boolean;
+  /** Passed unchanged to the selected native adapter. */
   options?: Record<string, unknown>;
 }>;
 
@@ -28,6 +30,12 @@ export type AppDefinition<S extends Record<string, AnyScreenDefinition>> = Reado
   screens: S;
   /** Each tab owns a native stack. Defaults to a single root stack. */
   tabs?: readonly (keyof S & string)[];
+  /** Opt-in route protection. The login route must not itself require auth. */
+  auth?: Readonly<{
+    isAuthenticated: () => boolean | Promise<boolean>;
+    login: keyof S & string;
+    onBlocked?: (attempt: Readonly<{ route: keyof S & string; params: unknown }>) => void;
+  }>;
 }>;
 
 export type RnnLayout = Record<string, unknown>;

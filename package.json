@@ -1,7 +1,7 @@
 {
   "name": "react-native-flow-nav",
   "version": "0.1.0",
-  "description": "A tiny, typed, native-first navigation API built on React Native Navigation.",
+  "description": "A tiny, typed navigation core for React Native, with optional native adapters.",
   "keywords": [
     "react-native",
     "navigation",
@@ -32,8 +32,12 @@
   },
   "peerDependencies": {
     "react": ">=18",
-    "react-native": ">=0.72",
-    "react-native-navigation": "^8.9.0"
+    "react-native": ">=0.72"
+  },
+  "peerDependenciesMeta": {
+    "react-native-navigation": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

@@ -31,6 +31,10 @@ export function defineApp<const S extends Record<string, AnyScreenDefinition>>(a
   if (!/^[A-Za-z][A-Za-z0-9_.-]*$/.test(app.id ?? 'app')) throw new TypeError('app.id may contain only letters, numbers, ., _, and -.');
   if (!(app.start in app.screens)) throw new TypeError(`Unknown start screen: ${app.start}`);
   for (const tab of app.tabs ?? []) if (!(tab in app.screens)) throw new TypeError(`Unknown tab screen: ${tab}`);
+  if (app.auth) {
+    if (!(app.auth.login in app.screens)) throw new TypeError(`Unknown login screen: ${app.auth.login}`);
+    if (app.screens[app.auth.login].options.requiresAuth) throw new TypeError('The login screen must not require authentication.');
+  }
   return Object.freeze({ ...app, screens: Object.freeze({ ...app.screens }), tabs: app.tabs ? Object.freeze([...app.tabs]) : undefined });
 }
 
@@ -67,7 +71,16 @@ export function createFlow<const S extends Record<string, AnyScreenDefinition>>(
     adapter.onComponentDidAppear?.(({ componentId }) => { activeComponentId = componentId; });
   };
   const firstArg = (args: unknown[]) => args[0];
-  const open = async (name: string, params: unknown, forced?: 'modal' | 'overlay') => {
+  const resolveRoute = async (name: string, params: unknown): Promise<{ name: string; params: unknown }> => {
+    const screen = getScreen(name);
+    if (!screen.options.requiresAuth) return { name, params };
+    if (!app.auth) throw new Error(`Screen ${name} requires auth, but no auth configuration was provided.`);
+    if (await app.auth.isAuthenticated()) return { name, params };
+    app.auth.onBlocked?.({ route: name as keyof S & string, params });
+    return { name: app.auth.login, params: undefined };
+  };
+  const open = async (requestedName: string, requestedParams: unknown, forced?: 'modal' | 'overlay') => {
+    const { name, params } = await resolveRoute(requestedName, requestedParams);
     const mode = forced ?? getScreen(name).options.presentation ?? 'push';
     if (mode === 'modal') return adapter.showModal(layout(name, params));
     if (mode === 'overlay') return adapter.showOverlay(layout(name, params));
@@ -77,9 +90,10 @@ export function createFlow<const S extends Record<string, AnyScreenDefinition>>(
   register();
   return Object.freeze({
     async start() {
+      const initial = await resolveRoute(app.start, undefined);
       const root = app.tabs?.length
         ? { root: { bottomTabs: { children: app.tabs.map((name) => ({ stack: { children: [layout(name)] } })) } } }
-        : { root: { stack: { children: [layout(app.start)] } } };
+        : { root: { stack: { children: [layout(initial.name, initial.params)] } } };
       await adapter.setRoot(root);
     },
     async to(name, ...args) { await open(name, firstArg(args)); },
